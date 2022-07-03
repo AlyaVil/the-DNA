@@ -1,0 +1,63 @@
+/*
+It's in the DNA
+
+Uses rotates and sin waves to get a spinning ribbon.
+
+Controls:
+	- Move mouse along x to change the twist amount.
+    - Move mouse along y to change the wave amount.
+    - Click to toggle smooth.
+
+*/
+
+int xCount = 150;
+int xSpacing = 4;
+int zCount = 20;
+int zSpacing = 5;
+boolean smoothCurve = false;
+
+
+void setup() {
+  size(900, 700, P3D);
+  
+  smooth();
+  textSize(20);
+  strokeWeight(3);
+  
+  mouseX = width/2;
+  mouseY = height/2;
+}
+
+
+void mousePressed() {
+  smoothCurve = !smoothCurve;
+}
+
+
+void draw() {
+  background(0);
+  
+  // Setup camera's transform.
+  pushMatrix();
+  translate(width/2+50, height/2, 200);
+  rotateX(radians(-45));
+  rotateY(radians(25));
+  
+  for (int z = 0; z < zCount; z++) {
+    for (int x = 0; x < xCount; x++) {
+      pushMatrix();
+      float twistMult = map(mouseX, 0, width, 0.1, 2);
+      rotateX(-(frameCount*0.025+x*0.05)*twistMult);
+      
+      pushMatrix();
+      float waveMult = map(mouseY, height, 0, 0, 25);
+      float wave = -sin((frameCount+x)*0.1)*waveMult;
+      
+      if (smoothCurve) {
+        float spread = 1;
+      } else {
+        float spread = sin(frameCount*0.02+x);
+      }
+	  
+      translate((x*xSpacing-(xCount*xSpacing*0.5))+wave, 0, (z*zSpacing-(zCount*zSpacing*0.5))*spread);
+      
